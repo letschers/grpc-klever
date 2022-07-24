@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./proto";
+
+message Crypto {
+    int64 id = 1;
+    string name = 2;
+    int64 votes = 3;
+}
+
+message CreateCryptoRequest {
+    Crypto crypto = 1;
+}
+
+message CreateCryptoResponse {
+    Crypto crypto = 1;
+}
+
+message GetCryptoRequest {
+    int64 id = 1;
+}
+
+message GetCryptoResponse {
+    Crypto crypto = 1;
+}
+
+message UpdateCryptoRequest {
+    int64 id = 1;
+}
+
+message UpdateCryptoResponse {
+    Crypto crypto = 1;
+}
+
+message DeleteCryptoRequest {
+    int64 id = 1;
+}
+
+message DeleteCryptoResponse {
+    Crypto crypto = 1;
+}
+
+message UpVoteRequest {
+    string id = 1;
+}
+  
+message UpVoteResponse {
+    Crypto crypto = 1;
+ }
+  
+message DownVoteRequest {
+    int64 id = 1;
+}
+  
+message DownVoteResponse {
+    Crypto crypto = 1;
+}
+
+service CryptoService {
+    rpc CreateCrypto(CreateCryptoRequest) returns (CreateCryptoResponse);
+    rpc GetCrypto(GetCryptoRequest) returns (GetCryptoResponse);
+    rpc UpdateCrypto(UpdateCryptoRequest) returns (UpdateCryptoResponse);
+    rpc DeleteCrypto(DeleteCryptoRequest) returns (DeleteCryptoResponse);
+
+    rpc UpVote(UpVoteRequest) returns (UpVoteResponse);
+    rpc DownVote(DownVoteRequest) returns (DownVoteResponse);
+}
