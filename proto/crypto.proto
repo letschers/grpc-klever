@@ -27,7 +27,7 @@ message GetCryptoResponse {
 }
 
 message UpdateCryptoRequest {
-    int64 id = 1;
+    Crypto crypto = 1;
 }
 
 message UpdateCryptoResponse {
@@ -35,7 +35,7 @@ message UpdateCryptoResponse {
 }
 
 message DeleteCryptoRequest {
-    int64 id = 1;
+    Crypto crypto = 1;
 }
 
 message DeleteCryptoResponse {
@@ -43,7 +43,7 @@ message DeleteCryptoResponse {
 }
 
 message UpVoteRequest {
-    string id = 1;
+    Crypto id = 1;
 }
   
 message UpVoteResponse {
@@ -51,7 +51,7 @@ message UpVoteResponse {
  }
   
 message DownVoteRequest {
-    int64 id = 1;
+    Crypto id = 1;
 }
   
 message DownVoteResponse {

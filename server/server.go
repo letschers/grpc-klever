@@ -17,7 +17,6 @@ type CryptoServiceServer struct {
 }
 
 func (s *CryptoServiceServer) CreateCrypto(ctx context.Context, request *pb.CreateCryptoRequest) (*pb.CreateCryptoResponse, error) {
-	fmt.Printf("Request: %v", request)
 
 	cryptoData := request.GetCrypto()
 
@@ -28,7 +27,19 @@ func (s *CryptoServiceServer) CreateCrypto(ctx context.Context, request *pb.Crea
 	}}, nil
 }
 
+/*func (s *CryptoServiceServer) GetCrypto(ctx context.Context, request *pb.GetCryptoRequest) (*pb.GetCryptoResponse, error) {
+
+	cryptoData := request.GetId()
+
+	return &pb.GetCryptoResponse{Crypto: &pb.Crypto{
+		Id:    cryptoData.GetId(),
+		Name:  cryptoData.GetName(),
+		Votes: cryptoData.GetVotes(),
+	}}, nil
+}*/
+
 func main() {
+
 	if err := godotenv.Load("../.env"); err != nil {
 		fmt.Printf("Error: %v", err)
 	}
