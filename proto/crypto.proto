@@ -5,13 +5,14 @@ package proto;
 option go_package = "./proto";
 
 message Crypto {
-    int64 id = 1;
+    int32 id = 1;
     string name = 2;
-    int64 votes = 3;
+    int32 votes = 3;
 }
 
 message CreateCryptoRequest {
-    Crypto crypto = 1;
+    string name = 1;
+    int32 votes = 2;
 }
 
 message CreateCryptoResponse {
@@ -19,7 +20,7 @@ message CreateCryptoResponse {
 }
 
 message GetCryptoRequest {
-    int64 id = 1;
+    int32 id = 1;
 }
 
 message GetCryptoResponse {
@@ -35,26 +36,26 @@ message UpdateCryptoResponse {
 }
 
 message DeleteCryptoRequest {
-    Crypto crypto = 1;
+    int32 id = 1;
 }
 
 message DeleteCryptoResponse {
     Crypto crypto = 1;
 }
 
-message UpVoteRequest {
-    Crypto id = 1;
+message UpVoteCryptoRequest {
+    int32 id = 1;
 }
   
-message UpVoteResponse {
+message UpVoteCryptoResponse {
     Crypto crypto = 1;
  }
   
-message DownVoteRequest {
-    Crypto id = 1;
+message DownVoteCryptoRequest {
+    int32 id = 1;
 }
   
-message DownVoteResponse {
+message DownVoteCryptoResponse {
     Crypto crypto = 1;
 }
 
@@ -63,7 +64,7 @@ service CryptoService {
     rpc GetCrypto(GetCryptoRequest) returns (GetCryptoResponse);
     rpc UpdateCrypto(UpdateCryptoRequest) returns (UpdateCryptoResponse);
     rpc DeleteCrypto(DeleteCryptoRequest) returns (DeleteCryptoResponse);
-
-    rpc UpVote(UpVoteRequest) returns (UpVoteResponse);
-    rpc DownVote(DownVoteRequest) returns (DownVoteResponse);
+    
+    rpc UpVoteCrypto(UpVoteCryptoRequest) returns (UpVoteCryptoResponse);
+    rpc DownVoteCrypto(DownVoteCryptoRequest) returns (DownVoteCryptoResponse);
 }

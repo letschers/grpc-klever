@@ -22,8 +22,8 @@ type CryptoServiceClient interface {
 	GetCrypto(ctx context.Context, in *GetCryptoRequest, opts ...grpc.CallOption) (*GetCryptoResponse, error)
 	UpdateCrypto(ctx context.Context, in *UpdateCryptoRequest, opts ...grpc.CallOption) (*UpdateCryptoResponse, error)
 	DeleteCrypto(ctx context.Context, in *DeleteCryptoRequest, opts ...grpc.CallOption) (*DeleteCryptoResponse, error)
-	UpVote(ctx context.Context, in *UpVoteRequest, opts ...grpc.CallOption) (*UpVoteResponse, error)
-	DownVote(ctx context.Context, in *DownVoteRequest, opts ...grpc.CallOption) (*DownVoteResponse, error)
+	UpVoteCrypto(ctx context.Context, in *UpVoteCryptoRequest, opts ...grpc.CallOption) (*UpVoteCryptoResponse, error)
+	DownVoteCrypto(ctx context.Context, in *DownVoteCryptoRequest, opts ...grpc.CallOption) (*DownVoteCryptoResponse, error)
 }
 
 type cryptoServiceClient struct {
@@ -70,18 +70,18 @@ func (c *cryptoServiceClient) DeleteCrypto(ctx context.Context, in *DeleteCrypto
 	return out, nil
 }
 
-func (c *cryptoServiceClient) UpVote(ctx context.Context, in *UpVoteRequest, opts ...grpc.CallOption) (*UpVoteResponse, error) {
-	out := new(UpVoteResponse)
-	err := c.cc.Invoke(ctx, "/proto.CryptoService/UpVote", in, out, opts...)
+func (c *cryptoServiceClient) UpVoteCrypto(ctx context.Context, in *UpVoteCryptoRequest, opts ...grpc.CallOption) (*UpVoteCryptoResponse, error) {
+	out := new(UpVoteCryptoResponse)
+	err := c.cc.Invoke(ctx, "/proto.CryptoService/UpVoteCrypto", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *cryptoServiceClient) DownVote(ctx context.Context, in *DownVoteRequest, opts ...grpc.CallOption) (*DownVoteResponse, error) {
-	out := new(DownVoteResponse)
-	err := c.cc.Invoke(ctx, "/proto.CryptoService/DownVote", in, out, opts...)
+func (c *cryptoServiceClient) DownVoteCrypto(ctx context.Context, in *DownVoteCryptoRequest, opts ...grpc.CallOption) (*DownVoteCryptoResponse, error) {
+	out := new(DownVoteCryptoResponse)
+	err := c.cc.Invoke(ctx, "/proto.CryptoService/DownVoteCrypto", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,8 +96,8 @@ type CryptoServiceServer interface {
 	GetCrypto(context.Context, *GetCryptoRequest) (*GetCryptoResponse, error)
 	UpdateCrypto(context.Context, *UpdateCryptoRequest) (*UpdateCryptoResponse, error)
 	DeleteCrypto(context.Context, *DeleteCryptoRequest) (*DeleteCryptoResponse, error)
-	UpVote(context.Context, *UpVoteRequest) (*UpVoteResponse, error)
-	DownVote(context.Context, *DownVoteRequest) (*DownVoteResponse, error)
+	UpVoteCrypto(context.Context, *UpVoteCryptoRequest) (*UpVoteCryptoResponse, error)
+	DownVoteCrypto(context.Context, *DownVoteCryptoRequest) (*DownVoteCryptoResponse, error)
 	mustEmbedUnimplementedCryptoServiceServer()
 }
 
@@ -117,11 +117,11 @@ func (UnimplementedCryptoServiceServer) UpdateCrypto(context.Context, *UpdateCry
 func (UnimplementedCryptoServiceServer) DeleteCrypto(context.Context, *DeleteCryptoRequest) (*DeleteCryptoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCrypto not implemented")
 }
-func (UnimplementedCryptoServiceServer) UpVote(context.Context, *UpVoteRequest) (*UpVoteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpVote not implemented")
+func (UnimplementedCryptoServiceServer) UpVoteCrypto(context.Context, *UpVoteCryptoRequest) (*UpVoteCryptoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpVoteCrypto not implemented")
 }
-func (UnimplementedCryptoServiceServer) DownVote(context.Context, *DownVoteRequest) (*DownVoteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DownVote not implemented")
+func (UnimplementedCryptoServiceServer) DownVoteCrypto(context.Context, *DownVoteCryptoRequest) (*DownVoteCryptoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DownVoteCrypto not implemented")
 }
 func (UnimplementedCryptoServiceServer) mustEmbedUnimplementedCryptoServiceServer() {}
 
@@ -208,38 +208,38 @@ func _CryptoService_DeleteCrypto_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CryptoService_UpVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpVoteRequest)
+func _CryptoService_UpVoteCrypto_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpVoteCryptoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CryptoServiceServer).UpVote(ctx, in)
+		return srv.(CryptoServiceServer).UpVoteCrypto(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.CryptoService/UpVote",
+		FullMethod: "/proto.CryptoService/UpVoteCrypto",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CryptoServiceServer).UpVote(ctx, req.(*UpVoteRequest))
+		return srv.(CryptoServiceServer).UpVoteCrypto(ctx, req.(*UpVoteCryptoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CryptoService_DownVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DownVoteRequest)
+func _CryptoService_DownVoteCrypto_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DownVoteCryptoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CryptoServiceServer).DownVote(ctx, in)
+		return srv.(CryptoServiceServer).DownVoteCrypto(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.CryptoService/DownVote",
+		FullMethod: "/proto.CryptoService/DownVoteCrypto",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CryptoServiceServer).DownVote(ctx, req.(*DownVoteRequest))
+		return srv.(CryptoServiceServer).DownVoteCrypto(ctx, req.(*DownVoteCryptoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -268,12 +268,12 @@ var CryptoService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CryptoService_DeleteCrypto_Handler,
 		},
 		{
-			MethodName: "UpVote",
-			Handler:    _CryptoService_UpVote_Handler,
+			MethodName: "UpVoteCrypto",
+			Handler:    _CryptoService_UpVoteCrypto_Handler,
 		},
 		{
-			MethodName: "DownVote",
-			Handler:    _CryptoService_DownVote_Handler,
+			MethodName: "DownVoteCrypto",
+			Handler:    _CryptoService_DownVoteCrypto_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
