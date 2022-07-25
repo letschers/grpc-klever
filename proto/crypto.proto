@@ -59,12 +59,20 @@ message DownVoteCryptoResponse {
     Crypto crypto = 1;
 }
 
+message StreamVoteRequest {
+    int32 id = 1;
+}
+
+message StreamVoteResponse {
+    int32 votes = 1;
+}
+
 service CryptoService {
     rpc CreateCrypto(CreateCryptoRequest) returns (CreateCryptoResponse);
     rpc GetCrypto(GetCryptoRequest) returns (GetCryptoResponse);
     rpc UpdateCrypto(UpdateCryptoRequest) returns (UpdateCryptoResponse);
     rpc DeleteCrypto(DeleteCryptoRequest) returns (DeleteCryptoResponse);
-    
     rpc UpVoteCrypto(UpVoteCryptoRequest) returns (UpVoteCryptoResponse);
     rpc DownVoteCrypto(DownVoteCryptoRequest) returns (DownVoteCryptoResponse);
+    rpc StreamVotesCrypto(StreamVoteRequest) returns (stream StreamVoteResponse);
 }
