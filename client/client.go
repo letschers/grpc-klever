@@ -29,7 +29,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	response, err := client.DownVoteCrypto(ctx, &pb.DownVoteCryptoRequest{Id: 14})
+	response, err := client.GetCrypto(ctx, &pb.GetCryptoRequest{Id: 14})
 
 	if err != nil {
 		log.Println(err)

@@ -1,12 +1,10 @@
-package server
+package tests
 
 import (
 	"context"
 	"log"
 	"net"
-	"os"
 
-	"github.com/letschers/grpc-klever/database"
 	pb "github.com/letschers/grpc-klever/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -17,7 +15,8 @@ type CryptoServiceServer struct {
 }
 
 func StartServer() {
-	lis, err := net.Listen("tcp", os.Getenv("SERVER_PORT"))
+
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
@@ -32,84 +31,71 @@ func StartServer() {
 }
 
 func (s *CryptoServiceServer) CreateCrypto(ctx context.Context, request *pb.CreateCryptoRequest) (*pb.CreateCryptoResponse, error) {
-	db := database.IDatabase{}
-	data, err := db.CreateCrypto(request.GetName(), request.GetVotes())
-	if err != nil {
-		return nil, err
-	}
-
 	response := &pb.CreateCryptoResponse{
-		Crypto: data,
+		Crypto: &pb.Crypto{
+			Id:    15,
+			Name:  request.Name,
+			Votes: 0,
+		},
 	}
-
 	return response, nil
 }
 
 func (s *CryptoServiceServer) GetCrypto(ctx context.Context, request *pb.GetCryptoRequest) (*pb.GetCryptoResponse, error) {
-	db := database.IDatabase{}
-	data, err := db.GetCrypto(request.GetId())
-	if err != nil {
-		return nil, err
-	}
-
 	response := &pb.GetCryptoResponse{
-		Crypto: data,
+		Crypto: &pb.Crypto{
+			Id:    request.Id,
+			Name:  "TestCoin",
+			Votes: 0,
+		},
 	}
 
 	return response, nil
 }
 
 func (s *CryptoServiceServer) DeleteCrypto(ctx context.Context, request *pb.DeleteCryptoRequest) (*pb.DeleteCryptoResponse, error) {
-	db := database.IDatabase{}
-	data, err := db.DeleteCrypto(request.GetId())
-	if err != nil {
-		return nil, err
-	}
-
 	response := &pb.DeleteCryptoResponse{
-		Crypto: data,
+		Crypto: &pb.Crypto{
+			Id:    request.Id,
+			Name:  "Testcoin",
+			Votes: 0,
+		},
 	}
 
 	return response, nil
 }
 
 func (s *CryptoServiceServer) UpdateCrypto(ctx context.Context, request *pb.UpdateCryptoRequest) (*pb.UpdateCryptoResponse, error) {
-	db := database.IDatabase{}
-	data, err := db.UpdateCrypto(request.Crypto)
-	if err != nil {
-		return nil, err
-	}
-
 	response := &pb.UpdateCryptoResponse{
-		Crypto: data,
+		Crypto: &pb.Crypto{
+			Id:    request.Crypto.Id,
+			Name:  request.Crypto.Name,
+			Votes: request.Crypto.Votes,
+		},
 	}
 
 	return response, nil
 }
 
 func (s *CryptoServiceServer) UpVoteCrypto(ctx context.Context, request *pb.UpVoteCryptoRequest) (*pb.UpVoteCryptoResponse, error) {
-	db := database.IDatabase{}
-	data, err := db.UpVoteCrypto(request.Crypto.Id)
-	if err != nil {
-		return nil, err
-	}
-
 	response := &pb.UpVoteCryptoResponse{
-		Crypto: data,
+		Crypto: &pb.Crypto{
+			Id:    request.Crypto.Id,
+			Name:  request.Crypto.Name,
+			Votes: request.Crypto.Votes + 1,
+		},
 	}
 
 	return response, nil
 }
 
 func (s *CryptoServiceServer) DownVoteCrypto(ctx context.Context, request *pb.DownVoteCryptoRequest) (*pb.DownVoteCryptoResponse, error) {
-	db := database.IDatabase{}
-	data, err := db.DownVoteCrypto(request.Crypto.Id)
-	if err != nil {
-		return nil, err
-	}
-
 	response := &pb.DownVoteCryptoResponse{
-		Crypto: data,
+		Crypto: &pb.Crypto{
+			Id:    request.Crypto.Id,
+			Name:  request.Crypto.Name,
+			Votes: request.Crypto.Votes - 1,
+		},
 	}
 
 	return response, nil

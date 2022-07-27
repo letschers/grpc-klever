@@ -24,7 +24,6 @@ type CryptoServiceClient interface {
 	DeleteCrypto(ctx context.Context, in *DeleteCryptoRequest, opts ...grpc.CallOption) (*DeleteCryptoResponse, error)
 	UpVoteCrypto(ctx context.Context, in *UpVoteCryptoRequest, opts ...grpc.CallOption) (*UpVoteCryptoResponse, error)
 	DownVoteCrypto(ctx context.Context, in *DownVoteCryptoRequest, opts ...grpc.CallOption) (*DownVoteCryptoResponse, error)
-	StreamVotesCrypto(ctx context.Context, in *StreamVoteRequest, opts ...grpc.CallOption) (CryptoService_StreamVotesCryptoClient, error)
 }
 
 type cryptoServiceClient struct {
@@ -89,38 +88,6 @@ func (c *cryptoServiceClient) DownVoteCrypto(ctx context.Context, in *DownVoteCr
 	return out, nil
 }
 
-func (c *cryptoServiceClient) StreamVotesCrypto(ctx context.Context, in *StreamVoteRequest, opts ...grpc.CallOption) (CryptoService_StreamVotesCryptoClient, error) {
-	stream, err := c.cc.NewStream(ctx, &CryptoService_ServiceDesc.Streams[0], "/proto.CryptoService/StreamVotesCrypto", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &cryptoServiceStreamVotesCryptoClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type CryptoService_StreamVotesCryptoClient interface {
-	Recv() (*StreamVoteResponse, error)
-	grpc.ClientStream
-}
-
-type cryptoServiceStreamVotesCryptoClient struct {
-	grpc.ClientStream
-}
-
-func (x *cryptoServiceStreamVotesCryptoClient) Recv() (*StreamVoteResponse, error) {
-	m := new(StreamVoteResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 // CryptoServiceServer is the server API for CryptoService service.
 // All implementations must embed UnimplementedCryptoServiceServer
 // for forward compatibility
@@ -131,7 +98,6 @@ type CryptoServiceServer interface {
 	DeleteCrypto(context.Context, *DeleteCryptoRequest) (*DeleteCryptoResponse, error)
 	UpVoteCrypto(context.Context, *UpVoteCryptoRequest) (*UpVoteCryptoResponse, error)
 	DownVoteCrypto(context.Context, *DownVoteCryptoRequest) (*DownVoteCryptoResponse, error)
-	StreamVotesCrypto(*StreamVoteRequest, CryptoService_StreamVotesCryptoServer) error
 	mustEmbedUnimplementedCryptoServiceServer()
 }
 
@@ -156,9 +122,6 @@ func (UnimplementedCryptoServiceServer) UpVoteCrypto(context.Context, *UpVoteCry
 }
 func (UnimplementedCryptoServiceServer) DownVoteCrypto(context.Context, *DownVoteCryptoRequest) (*DownVoteCryptoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownVoteCrypto not implemented")
-}
-func (UnimplementedCryptoServiceServer) StreamVotesCrypto(*StreamVoteRequest, CryptoService_StreamVotesCryptoServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamVotesCrypto not implemented")
 }
 func (UnimplementedCryptoServiceServer) mustEmbedUnimplementedCryptoServiceServer() {}
 
@@ -281,27 +244,6 @@ func _CryptoService_DownVoteCrypto_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CryptoService_StreamVotesCrypto_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(StreamVoteRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(CryptoServiceServer).StreamVotesCrypto(m, &cryptoServiceStreamVotesCryptoServer{stream})
-}
-
-type CryptoService_StreamVotesCryptoServer interface {
-	Send(*StreamVoteResponse) error
-	grpc.ServerStream
-}
-
-type cryptoServiceStreamVotesCryptoServer struct {
-	grpc.ServerStream
-}
-
-func (x *cryptoServiceStreamVotesCryptoServer) Send(m *StreamVoteResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 // CryptoService_ServiceDesc is the grpc.ServiceDesc for CryptoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -334,12 +276,6 @@ var CryptoService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CryptoService_DownVoteCrypto_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "StreamVotesCrypto",
-			Handler:       _CryptoService_StreamVotesCrypto_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/crypto.proto",
 }
