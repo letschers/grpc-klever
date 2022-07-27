@@ -29,7 +29,11 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	response, err := client.GetAllCrypto(ctx, &pb.GetAllCryptoRequest{})
+	response, err := client.UpVoteCrypto(ctx, &pb.UpVoteCryptoRequest{Crypto: &pb.Crypto{
+		Id:    14,
+		Name:  "Bitcoin",
+		Votes: 16,
+	}})
 
 	if err != nil {
 		log.Println(err)

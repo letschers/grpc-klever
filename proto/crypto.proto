@@ -51,7 +51,7 @@ message DeleteCryptoResponse {
 }
 
 message UpVoteCryptoRequest {
-    Crypto Crypto = 1;
+    Crypto crypto = 1;
 }
   
 message UpVoteCryptoResponse {
@@ -59,7 +59,7 @@ message UpVoteCryptoResponse {
  }
   
 message DownVoteCryptoRequest {
-    Crypto Crypto = 1;
+    Crypto crypto = 1;
 }
   
 message DownVoteCryptoResponse {
