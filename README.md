@@ -15,3 +15,24 @@
 
 - Deliver the whole solution running in some free cloud service
 - The API have a method that stream a live update of the current sum of the votes from a given Cryptocurrency
+
+
+## How to run
+
+1. Clone repository
+
+```bash 
+git clone https://github.com/letschers/grpc-klever
+```
+
+2. Run Server
+
+```bash
+make run_server
+```
+
+3. Run Client for a sample of use
+
+```bash
+make run_client
+```
