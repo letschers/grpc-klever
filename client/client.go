@@ -29,7 +29,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	response, err := client.DeleteCrypto(ctx, &pb.DeleteCryptoRequest{Id: 22})
+	response, err := client.GetAllCrypto(ctx, &pb.GetAllCryptoRequest{})
 
 	if err != nil {
 		log.Println(err)

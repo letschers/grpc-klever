@@ -53,6 +53,29 @@ func (s *CryptoServiceServer) GetCrypto(ctx context.Context, request *pb.GetCryp
 	return response, nil
 }
 
+func (s *CryptoServiceServer) GetAllCrypto(ctx context.Context, request *pb.GetAllCryptoRequest) (*pb.GetAllCryptoResponse, error) {
+	response := &pb.GetAllCryptoResponse{
+		Cryptos: []*pb.Crypto{
+			&pb.Crypto{
+				Id:    15,
+				Name:  "TestCoin",
+				Votes: 0,
+			},
+			&pb.Crypto{
+				Id:   10,
+				Name: "TestCoin2",
+			},
+			&pb.Crypto{
+				Id:    2,
+				Name:  "TestCoin3",
+				Votes: 0,
+			},
+		},
+	}
+
+	return response, nil
+}
+
 func (s *CryptoServiceServer) DeleteCrypto(ctx context.Context, request *pb.DeleteCryptoRequest) (*pb.DeleteCryptoResponse, error) {
 	response := &pb.DeleteCryptoResponse{
 		Crypto: &pb.Crypto{

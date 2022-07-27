@@ -83,6 +83,20 @@ func TestGetCrypto(t *testing.T) {
 	}
 }
 
+func TestGetAllCrypto(t *testing.T) {
+	ctx, conn, cancel := connectToServer()
+	defer conn.Close()
+	defer cancel()
+
+	request := &pb.GetAllCryptoRequest{}
+
+	_, err := cryptoServiceClient.GetAllCrypto(ctx, request)
+	if err != nil {
+		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
+	}
+
+}
+
 func TestDeleteCrypto(t *testing.T) {
 	ctx, conn, cancel := connectToServer()
 	defer conn.Close()

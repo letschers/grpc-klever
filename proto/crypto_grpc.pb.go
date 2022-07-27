@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CryptoServiceClient interface {
 	CreateCrypto(ctx context.Context, in *CreateCryptoRequest, opts ...grpc.CallOption) (*CreateCryptoResponse, error)
 	GetCrypto(ctx context.Context, in *GetCryptoRequest, opts ...grpc.CallOption) (*GetCryptoResponse, error)
+	GetAllCrypto(ctx context.Context, in *GetAllCryptoRequest, opts ...grpc.CallOption) (*GetAllCryptoResponse, error)
 	UpdateCrypto(ctx context.Context, in *UpdateCryptoRequest, opts ...grpc.CallOption) (*UpdateCryptoResponse, error)
 	DeleteCrypto(ctx context.Context, in *DeleteCryptoRequest, opts ...grpc.CallOption) (*DeleteCryptoResponse, error)
 	UpVoteCrypto(ctx context.Context, in *UpVoteCryptoRequest, opts ...grpc.CallOption) (*UpVoteCryptoResponse, error)
@@ -46,6 +47,15 @@ func (c *cryptoServiceClient) CreateCrypto(ctx context.Context, in *CreateCrypto
 func (c *cryptoServiceClient) GetCrypto(ctx context.Context, in *GetCryptoRequest, opts ...grpc.CallOption) (*GetCryptoResponse, error) {
 	out := new(GetCryptoResponse)
 	err := c.cc.Invoke(ctx, "/proto.CryptoService/GetCrypto", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cryptoServiceClient) GetAllCrypto(ctx context.Context, in *GetAllCryptoRequest, opts ...grpc.CallOption) (*GetAllCryptoResponse, error) {
+	out := new(GetAllCryptoResponse)
+	err := c.cc.Invoke(ctx, "/proto.CryptoService/GetAllCrypto", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,6 +104,7 @@ func (c *cryptoServiceClient) DownVoteCrypto(ctx context.Context, in *DownVoteCr
 type CryptoServiceServer interface {
 	CreateCrypto(context.Context, *CreateCryptoRequest) (*CreateCryptoResponse, error)
 	GetCrypto(context.Context, *GetCryptoRequest) (*GetCryptoResponse, error)
+	GetAllCrypto(context.Context, *GetAllCryptoRequest) (*GetAllCryptoResponse, error)
 	UpdateCrypto(context.Context, *UpdateCryptoRequest) (*UpdateCryptoResponse, error)
 	DeleteCrypto(context.Context, *DeleteCryptoRequest) (*DeleteCryptoResponse, error)
 	UpVoteCrypto(context.Context, *UpVoteCryptoRequest) (*UpVoteCryptoResponse, error)
@@ -110,6 +121,9 @@ func (UnimplementedCryptoServiceServer) CreateCrypto(context.Context, *CreateCry
 }
 func (UnimplementedCryptoServiceServer) GetCrypto(context.Context, *GetCryptoRequest) (*GetCryptoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCrypto not implemented")
+}
+func (UnimplementedCryptoServiceServer) GetAllCrypto(context.Context, *GetAllCryptoRequest) (*GetAllCryptoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllCrypto not implemented")
 }
 func (UnimplementedCryptoServiceServer) UpdateCrypto(context.Context, *UpdateCryptoRequest) (*UpdateCryptoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCrypto not implemented")
@@ -168,6 +182,24 @@ func _CryptoService_GetCrypto_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CryptoServiceServer).GetCrypto(ctx, req.(*GetCryptoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CryptoService_GetAllCrypto_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllCryptoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CryptoServiceServer).GetAllCrypto(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.CryptoService/GetAllCrypto",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CryptoServiceServer).GetAllCrypto(ctx, req.(*GetAllCryptoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,6 +290,10 @@ var CryptoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCrypto",
 			Handler:    _CryptoService_GetCrypto_Handler,
+		},
+		{
+			MethodName: "GetAllCrypto",
+			Handler:    _CryptoService_GetAllCrypto_Handler,
 		},
 		{
 			MethodName: "UpdateCrypto",

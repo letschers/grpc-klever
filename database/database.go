@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"sync"
 
@@ -64,6 +65,31 @@ func (*IDatabase) GetCrypto(id int32) (*pb.Crypto, error) {
 	}
 
 	return &cryptoResponse, nil
+}
+
+func (*IDatabase) GetAllCrypto() ([]*pb.Crypto, error) {
+	if err := GetDatabaseClient(); err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+	}
+
+	response, err := DbConnection.Query("SELECT * FROM cryptos")
+
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+	}
+
+	cryptos := []*pb.Crypto{}
+	for response.Next() {
+		var crypto pb.Crypto
+		err = response.Scan(&crypto.Id, &crypto.Name, &crypto.Votes)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		cryptos = append(cryptos, &crypto)
+	}
+
+	return cryptos, nil
 }
 
 func (*IDatabase) DeleteCrypto(id int32) (*pb.Crypto, error) {

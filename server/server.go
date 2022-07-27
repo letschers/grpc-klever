@@ -59,6 +59,20 @@ func (s *CryptoServiceServer) GetCrypto(ctx context.Context, request *pb.GetCryp
 	return response, nil
 }
 
+func (s *CryptoServiceServer) GetAllCrypto(ctx context.Context, request *pb.GetAllCryptoRequest) (*pb.GetAllCryptoResponse, error) {
+	db := database.IDatabase{}
+	data, err := db.GetAllCrypto()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.GetAllCryptoResponse{
+		Cryptos: data,
+	}
+
+	return response, nil
+}
+
 func (s *CryptoServiceServer) DeleteCrypto(ctx context.Context, request *pb.DeleteCryptoRequest) (*pb.DeleteCryptoResponse, error) {
 	db := database.IDatabase{}
 	data, err := db.DeleteCrypto(request.GetId())

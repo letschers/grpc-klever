@@ -27,6 +27,13 @@ message GetCryptoResponse {
     Crypto crypto = 1;
 }
 
+message GetAllCryptoRequest {
+}
+
+message GetAllCryptoResponse {
+    repeated Crypto cryptos = 1;
+}
+
 message UpdateCryptoRequest {
     Crypto crypto = 1;
 }
@@ -70,6 +77,7 @@ message StreamVoteResponse {
 service CryptoService {
     rpc CreateCrypto(CreateCryptoRequest) returns (CreateCryptoResponse);
     rpc GetCrypto(GetCryptoRequest) returns (GetCryptoResponse);
+    rpc GetAllCrypto(GetAllCryptoRequest) returns (GetAllCryptoResponse);
     rpc UpdateCrypto(UpdateCryptoRequest) returns (UpdateCryptoResponse);
     rpc DeleteCrypto(DeleteCryptoRequest) returns (DeleteCryptoResponse);
     rpc UpVoteCrypto(UpVoteCryptoRequest) returns (UpVoteCryptoResponse);
