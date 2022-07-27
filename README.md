@@ -19,19 +19,26 @@
 
 ## How to run
 
+
 1. Clone repository
 
 ```bash 
 git clone https://github.com/letschers/grpc-klever
 ```
 
-2. Run Server
+2. Install dependencies with `go mod tidy`
+
+```bash 
+go mod tidy
+```
+
+3. Run Server
 
 ```bash
 make run_server
 ```
 
-3. Run Client for a sample of use
+4. Run Client for a sample of use
 
 ```bash
 make run_client
