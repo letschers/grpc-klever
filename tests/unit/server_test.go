@@ -2,10 +2,13 @@ package tests
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 	"testing"
 	"time"
 
+	"github.com/joho/godotenv"
 	pb "github.com/letschers/grpc-klever/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,8 +16,16 @@ import (
 
 var server pb.CryptoServiceClient
 
+func init() {
+	if err := godotenv.Load("../../.env"); err != nil {
+		fmt.Printf("Error: %v", err)
+	}
+
+	go StartServer()
+}
+
 func connectToServer() (*grpc.ClientConn, context.CancelFunc) {
-	conn, err := grpc.Dial("localhost:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("localhost"+os.Getenv("SERVER_PORT"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Error to connect to server: %v", err)
 	}
@@ -27,9 +38,6 @@ func connectToServer() (*grpc.ClientConn, context.CancelFunc) {
 	return conn, cancel
 }
 
-func init() {
-	go StartServer()
-}
 func TestCreateCrypto(t *testing.T) {
 	conn, cancel := connectToServer()
 	defer conn.Close()
