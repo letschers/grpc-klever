@@ -103,7 +103,7 @@ func (s *CryptoServiceServer) UpdateCrypto(ctx context.Context, request *pb.Upda
 
 func (s *CryptoServiceServer) UpVoteCrypto(ctx context.Context, request *pb.UpVoteCryptoRequest) (*pb.UpVoteCryptoResponse, error) {
 	db := database.IDatabase{}
-	data, err := db.UpVoteCrypto(request.Crypto.Id)
+	data, err := db.UpVoteCrypto(request.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (s *CryptoServiceServer) UpVoteCrypto(ctx context.Context, request *pb.UpVo
 
 func (s *CryptoServiceServer) DownVoteCrypto(ctx context.Context, request *pb.DownVoteCryptoRequest) (*pb.DownVoteCryptoResponse, error) {
 	db := database.IDatabase{}
-	data, err := db.DownVoteCrypto(request.Crypto.Id)
+	data, err := db.DownVoteCrypto(request.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -127,4 +127,22 @@ func (s *CryptoServiceServer) DownVoteCrypto(ctx context.Context, request *pb.Do
 	}
 
 	return response, nil
+}
+
+func (s *CryptoServiceServer) StreamCryptoVotes(request *pb.StreamCryptoVotesRequest, stream pb.CryptoService_StreamCryptoVotesServer) error {
+	db := database.IDatabase{}
+
+	for {
+		data, err := db.GetCrypto(request.Id)
+		if err != nil {
+			return err
+		}
+
+		streamResponse := &pb.StreamCryptoVotesResponse{
+			Votes: data.Votes,
+		}
+
+		stream.Send(streamResponse)
+	}
+	return nil
 }

@@ -139,11 +139,7 @@ func TestUpvoteCrypto(t *testing.T) {
 	defer cancel()
 
 	request := &pb.UpVoteCryptoRequest{
-		Crypto: &pb.Crypto{
-			Id:    15,
-			Name:  "Testcoin",
-			Votes: 0,
-		},
+		Id: 15,
 	}
 
 	response, err := server.UpVoteCrypto(context.Background(), request)
@@ -151,12 +147,12 @@ func TestUpvoteCrypto(t *testing.T) {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
 
-	if response.Crypto.Id != request.Crypto.Id {
-		t.Errorf("Data returned from server is incorrect. Expected %v, received %v", request.Crypto.Id, response.Crypto.Id)
+	if response.Crypto.Id != request.Id {
+		t.Errorf("Data returned from server is incorrect. Expected %v, received %v", request.Id, response.Crypto.Id)
 	}
 
-	if response.Crypto.Votes != request.Crypto.Votes+1 {
-		t.Errorf("Wasn't incremented correctly. Expected %v, received %v", request.Crypto.Votes+1, response.Crypto.Votes)
+	if response.Crypto.Votes != 1 {
+		t.Errorf("Wasn't incremented correctly. Expected %v, received %v", 1, response.Crypto.Votes)
 	}
 }
 
@@ -166,11 +162,7 @@ func TestDownvoteCrypto(t *testing.T) {
 	defer cancel()
 
 	request := &pb.DownVoteCryptoRequest{
-		Crypto: &pb.Crypto{
-			Id:    15,
-			Name:  "Testcoin",
-			Votes: 0,
-		},
+		Id: 15,
 	}
 
 	response, err := server.DownVoteCrypto(context.Background(), request)
@@ -178,11 +170,11 @@ func TestDownvoteCrypto(t *testing.T) {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
 
-	if response.Crypto.Id != request.Crypto.Id {
-		t.Errorf("Data returned from server is incorrect. Expected %v, received %v", request.Crypto.Id, response.Crypto.Id)
+	if response.Crypto.Id != request.Id {
+		t.Errorf("Data returned from server is incorrect. Expected %v, received %v", request.Id, response.Crypto.Id)
 	}
 
-	if response.Crypto.Votes != request.Crypto.Votes-1 {
-		t.Errorf("Wasn't incremented correctly. Expected %v, received %v", request.Crypto.Votes-1, response.Crypto.Votes)
+	if response.Crypto.Votes != -1 {
+		t.Errorf("Wasn't incremented correctly. Expected %v, received %v", -1, response.Crypto.Votes)
 	}
 }

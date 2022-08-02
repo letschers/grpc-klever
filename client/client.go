@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	pb "github.com/letschers/grpc-klever/proto"
@@ -26,18 +26,24 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewCryptoServiceClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx := context.Background()
 
-	response, err := client.UpVoteCrypto(ctx, &pb.UpVoteCryptoRequest{Crypto: &pb.Crypto{
-		Id:    14,
-		Name:  "Bitcoin",
-		Votes: 16,
-	}})
+	response, err := client.StreamCryptoVotes(ctx, &pb.StreamCryptoVotesRequest{Id: 14})
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	log.Println(response)
+	for {
+		serverResponse, err := response.Recv()
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatalf("error while reading stream: %v", err)
+		}
+
+		fmt.Printf("Server response: %v\n", serverResponse)
+	}
 }

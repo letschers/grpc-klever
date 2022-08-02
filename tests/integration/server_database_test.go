@@ -177,11 +177,7 @@ func TestUpvoteCrypto(t *testing.T) {
 	}
 
 	upvoteRequest := &pb.UpVoteCryptoRequest{
-		Crypto: &pb.Crypto{
-			Id:    createResponse.Crypto.Id,
-			Name:  "AlteredCoin",
-			Votes: 0,
-		},
+		Id: createResponse.Crypto.Id,
 	}
 
 	response, err := cryptoServiceClient.UpVoteCrypto(ctx, upvoteRequest)
@@ -189,7 +185,7 @@ func TestUpvoteCrypto(t *testing.T) {
 		t.Errorf("Wasn't possible to upvote the crypto. Error: %v", err)
 	}
 
-	if response, _ := cryptoServiceClient.GetCrypto(ctx, &pb.GetCryptoRequest{Id: response.Crypto.Id}); upvoteRequest.Crypto.Votes+1 != response.Crypto.Votes {
+	if response, _ := cryptoServiceClient.GetCrypto(ctx, &pb.GetCryptoRequest{Id: response.Crypto.Id}); createRequest.Votes+1 != response.Crypto.Votes {
 		t.Errorf("Crypto wasn't correctly upvoted. Error: %v", err)
 	}
 
@@ -212,11 +208,7 @@ func TestDownvoteCrypto(t *testing.T) {
 	}
 
 	downVoteRequest := &pb.DownVoteCryptoRequest{
-		Crypto: &pb.Crypto{
-			Id:    createResponse.Crypto.Id,
-			Name:  "AlteredCoin",
-			Votes: 0,
-		},
+		Id: createResponse.Crypto.Id,
 	}
 
 	response, err := cryptoServiceClient.DownVoteCrypto(ctx, downVoteRequest)
@@ -224,8 +216,8 @@ func TestDownvoteCrypto(t *testing.T) {
 		t.Errorf("Wasn't possible to upvote the crypto. Error: %v", err)
 	}
 
-	if response, _ := cryptoServiceClient.GetCrypto(ctx, &pb.GetCryptoRequest{Id: response.Crypto.Id}); downVoteRequest.Crypto.Votes-1 != response.Crypto.Votes {
-		t.Errorf("Crypto wasn't correctly upvoted. Error: %v", err)
+	if response, _ := cryptoServiceClient.GetCrypto(ctx, &pb.GetCryptoRequest{Id: response.Crypto.Id}); createRequest.Votes-1 != response.Crypto.Votes {
+		t.Errorf("Crypto wasn't correctly upvoted.")
 	}
 
 	_, _ = cryptoServiceClient.DeleteCrypto(ctx, &pb.DeleteCryptoRequest{Id: response.Crypto.Id})

@@ -103,9 +103,9 @@ func (s *CryptoServiceServer) UpdateCrypto(ctx context.Context, request *pb.Upda
 func (s *CryptoServiceServer) UpVoteCrypto(ctx context.Context, request *pb.UpVoteCryptoRequest) (*pb.UpVoteCryptoResponse, error) {
 	response := &pb.UpVoteCryptoResponse{
 		Crypto: &pb.Crypto{
-			Id:    request.Crypto.Id,
-			Name:  request.Crypto.Name,
-			Votes: request.Crypto.Votes + 1,
+			Id:    request.Id,
+			Name:  "Testcoin",
+			Votes: 1,
 		},
 	}
 
@@ -115,11 +115,23 @@ func (s *CryptoServiceServer) UpVoteCrypto(ctx context.Context, request *pb.UpVo
 func (s *CryptoServiceServer) DownVoteCrypto(ctx context.Context, request *pb.DownVoteCryptoRequest) (*pb.DownVoteCryptoResponse, error) {
 	response := &pb.DownVoteCryptoResponse{
 		Crypto: &pb.Crypto{
-			Id:    request.Crypto.Id,
-			Name:  request.Crypto.Name,
-			Votes: request.Crypto.Votes - 1,
+			Id:    request.Id,
+			Name:  "Testcoin",
+			Votes: -1,
 		},
 	}
 
 	return response, nil
+}
+
+func (s *CryptoServiceServer) StreamCryptoVotes(request *pb.StreamCryptoVotesRequest, stream pb.CryptoService_StreamCryptoVotesServer) error {
+	for {
+		streamResponse := &pb.StreamCryptoVotesResponse{
+			Votes: 1,
+		}
+
+		stream.Send(streamResponse)
+	}
+
+	return nil
 }
