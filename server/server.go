@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/letschers/grpc-klever/controller"
+	"github.com/letschers/grpc-klever/controllers"
 	pb "github.com/letschers/grpc-klever/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,7 +18,7 @@ func StartServer() {
 	}
 
 	server := grpc.NewServer()
-	pb.RegisterCryptoServiceServer(server, &controller.CryptoServiceServer{})
+	pb.RegisterCryptoServiceServer(server, &controllers.CryptoServiceServer{})
 	log.Printf("Server listening at: %v", lis.Addr())
 	reflection.Register(server)
 	if err := server.Serve(lis); err != nil {
