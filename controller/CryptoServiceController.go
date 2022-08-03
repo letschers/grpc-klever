@@ -14,6 +14,7 @@ type CryptoServiceServer struct {
 func (s *CryptoServiceServer) CreateCrypto(ctx context.Context, request *pb.CreateCryptoRequest) (*pb.CreateCryptoResponse, error) {
 	db := database.IDatabase{}
 	data, err := db.CreateCrypto(request.GetName(), request.GetVotes())
+
 	if err != nil {
 		return nil, err
 	}

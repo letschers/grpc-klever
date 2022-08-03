@@ -38,7 +38,7 @@ func GetDatabaseClient() error {
 
 func (*IDatabase) CreateCrypto(name string, votes int32) (*pb.Crypto, error) {
 	if err := GetDatabaseClient(); err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintln("Could not connect to database"))
 	}
 
 	var cryptoResponse pb.Crypto
@@ -46,7 +46,7 @@ func (*IDatabase) CreateCrypto(name string, votes int32) (*pb.Crypto, error) {
 		name, votes).Scan(&cryptoResponse.Id, &cryptoResponse.Name, &cryptoResponse.Votes)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Could not insert the crypto in the database. Reason: %v", err))
 	}
 
 	return &cryptoResponse, nil
@@ -54,14 +54,14 @@ func (*IDatabase) CreateCrypto(name string, votes int32) (*pb.Crypto, error) {
 
 func (*IDatabase) GetCrypto(id int32) (*pb.Crypto, error) {
 	if err := GetDatabaseClient(); err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintln("Could not connect to database"))
 	}
 
 	var cryptoResponse pb.Crypto
 	err := DbConnection.QueryRow("SELECT * FROM cryptos WHERE crypto_id = $1", id).Scan(&cryptoResponse.Id, &cryptoResponse.Name, &cryptoResponse.Votes)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintln("Did not found the requested crypto id in the database"))
 	}
 
 	return &cryptoResponse, nil
@@ -69,13 +69,13 @@ func (*IDatabase) GetCrypto(id int32) (*pb.Crypto, error) {
 
 func (*IDatabase) GetAllCrypto() ([]*pb.Crypto, error) {
 	if err := GetDatabaseClient(); err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintln("Could not connect to database"))
 	}
 
 	response, err := DbConnection.Query("SELECT * FROM cryptos")
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Wasn't possible to select all from crypto table. Reason: %v", err))
 	}
 
 	cryptos := []*pb.Crypto{}
@@ -94,14 +94,14 @@ func (*IDatabase) GetAllCrypto() ([]*pb.Crypto, error) {
 
 func (*IDatabase) DeleteCrypto(id int32) (*pb.Crypto, error) {
 	if err := GetDatabaseClient(); err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintln("Could not connect to database"))
 	}
 
 	var cryptoResponse pb.Crypto
 	err := DbConnection.QueryRow("DELETE FROM cryptos WHERE crypto_id = $1 RETURNING *", id).Scan(&cryptoResponse.Id, &cryptoResponse.Name, &cryptoResponse.Votes)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintln("Wasn't possible to delete crypto. Requested crypto id does not exist"))
 	}
 
 	return &cryptoResponse, nil
@@ -109,14 +109,14 @@ func (*IDatabase) DeleteCrypto(id int32) (*pb.Crypto, error) {
 
 func (*IDatabase) UpdateCrypto(request *pb.Crypto) (*pb.Crypto, error) {
 	if err := GetDatabaseClient(); err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintln("Could not connect to database"))
 	}
 
 	var cryptoResponse pb.Crypto
 	err := DbConnection.QueryRow("UPDATE cryptos SET crypto_name = $1, crypto_votes = $2 WHERE crypto_id = $3 RETURNING *", request.Name, request.Votes, request.Id).Scan(&cryptoResponse.Id, &cryptoResponse.Name, &cryptoResponse.Votes)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintln("Wasn't possible to update crypto. Requested crypto id does not exist"))
 	}
 
 	return &cryptoResponse, nil
@@ -124,14 +124,14 @@ func (*IDatabase) UpdateCrypto(request *pb.Crypto) (*pb.Crypto, error) {
 
 func (*IDatabase) UpVoteCrypto(request int32) (*pb.Crypto, error) {
 	if err := GetDatabaseClient(); err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error : %v", err))
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintln("Could not connect to database"))
 	}
 
 	var cryptoResponse pb.Crypto
 	err := DbConnection.QueryRow("UPDATE cryptos SET crypto_votes = (crypto_votes + 1) WHERE crypto_id = $1 RETURNING *", request).Scan(&cryptoResponse.Id, &cryptoResponse.Name, &cryptoResponse.Votes)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintln("Wasn't possible to upvote crypto. Requested crypto id does not exist"))
 	}
 
 	return &cryptoResponse, nil
@@ -146,7 +146,7 @@ func (db *IDatabase) DownVoteCrypto(request int32) (*pb.Crypto, error) {
 	err := DbConnection.QueryRow("UPDATE cryptos SET crypto_votes = crypto_votes - 1 WHERE crypto_id = $1 RETURNING *", request).Scan(&cryptoResponse.Id, &cryptoResponse.Name, &cryptoResponse.Votes)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Error: %v", err))
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintln("Wasn't possible to downvote crypto. Requested crypto id does not exist"))
 	}
 
 	return &cryptoResponse, nil
