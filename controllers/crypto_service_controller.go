@@ -125,5 +125,4 @@ func (s *CryptoServiceServer) StreamCryptoVotes(request *pb.StreamCryptoVotesReq
 
 		stream.Send(streamResponse)
 	}
-	return nil
 }

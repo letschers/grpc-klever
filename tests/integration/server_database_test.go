@@ -222,3 +222,36 @@ func TestDownvoteCrypto(t *testing.T) {
 
 	_, _ = cryptoServiceClient.DeleteCrypto(ctx, &pb.DeleteCryptoRequest{Id: response.Crypto.Id})
 }
+
+func TestStreamCryptoVotes(t *testing.T) {
+	ctx, conn, cancel := connectToServer()
+	defer conn.Close()
+	defer cancel()
+
+	request := &pb.StreamCryptoVotesRequest{
+		Id: 14,
+	}
+
+	response, err := cryptoServiceClient.StreamCryptoVotes(ctx, request)
+	if err != nil {
+		t.Errorf("Wasn't possible to get the crypto stream. Error: %v", err)
+	}
+
+	if response == nil {
+		t.Errorf("Server stream wasn't received")
+	}
+
+	serverResponse, err := response.Recv()
+	if err != nil {
+		t.Errorf("Wasn't possible to get the crypto stream. Error: %v", err)
+	}
+
+	if serverResponse == nil {
+		t.Errorf("Server stream wasn't received. Value: %v", serverResponse)
+	}
+
+	if response, _ := cryptoServiceClient.GetCrypto(ctx, &pb.GetCryptoRequest{Id: request.Id}); response.Crypto.Votes != serverResponse.Votes {
+		t.Errorf("Value returned from server wasn't correct. Expected: %v, received: %v", response.Crypto.Id, serverResponse.Votes)
+
+	}
+}

@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var server pb.CryptoServiceClient
+var cryptoServiceClient pb.CryptoServiceClient
 
 func init() {
 	if err := godotenv.Load("../../.env"); err != nil {
@@ -33,7 +33,7 @@ func connectToServer() (*grpc.ClientConn, context.CancelFunc) {
 	client := pb.NewCryptoServiceClient(conn)
 	_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	server = client
+	cryptoServiceClient = client
 
 	return conn, cancel
 }
@@ -48,7 +48,7 @@ func TestCreateCrypto(t *testing.T) {
 		Votes: 0,
 	}
 
-	response, err := server.CreateCrypto(context.Background(), request)
+	response, err := cryptoServiceClient.CreateCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to create the crypto. Error: %v", err)
 	}
@@ -67,7 +67,7 @@ func TestGetCrypto(t *testing.T) {
 		Id: 15,
 	}
 
-	response, err := server.GetCrypto(context.Background(), request)
+	response, err := cryptoServiceClient.GetCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
@@ -84,7 +84,7 @@ func TestGetAllCrypto(t *testing.T) {
 
 	request := &pb.GetAllCryptoRequest{}
 
-	_, err := server.GetAllCrypto(context.Background(), request)
+	_, err := cryptoServiceClient.GetAllCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
@@ -100,7 +100,7 @@ func TestDeleteCrypto(t *testing.T) {
 		Id: 15,
 	}
 
-	response, err := server.DeleteCrypto(context.Background(), request)
+	response, err := cryptoServiceClient.DeleteCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
@@ -123,7 +123,7 @@ func TestUpdateCrypto(t *testing.T) {
 		},
 	}
 
-	response, err := server.UpdateCrypto(context.Background(), request)
+	response, err := cryptoServiceClient.UpdateCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
@@ -142,7 +142,7 @@ func TestUpvoteCrypto(t *testing.T) {
 		Id: 15,
 	}
 
-	response, err := server.UpVoteCrypto(context.Background(), request)
+	response, err := cryptoServiceClient.UpVoteCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
@@ -165,7 +165,7 @@ func TestDownvoteCrypto(t *testing.T) {
 		Id: 15,
 	}
 
-	response, err := server.DownVoteCrypto(context.Background(), request)
+	response, err := cryptoServiceClient.DownVoteCrypto(context.Background(), request)
 	if err != nil {
 		t.Errorf("Wasn't possible to get the crypto. Error: %v", err)
 	}
@@ -176,5 +176,37 @@ func TestDownvoteCrypto(t *testing.T) {
 
 	if response.Crypto.Votes != -1 {
 		t.Errorf("Wasn't incremented correctly. Expected %v, received %v", -1, response.Crypto.Votes)
+	}
+}
+
+func TestStreamCryptoVotes(t *testing.T) {
+	conn, cancel := connectToServer()
+	defer conn.Close()
+	defer cancel()
+
+	request := &pb.StreamCryptoVotesRequest{
+		Id: 14,
+	}
+
+	response, err := cryptoServiceClient.StreamCryptoVotes(context.Background(), request)
+	if err != nil {
+		t.Errorf("Wasn't possible to get the crypto stream. Error: %v", err)
+	}
+
+	if response == nil {
+		t.Errorf("Server stream wasn't received")
+	}
+
+	serverResponse, err := response.Recv()
+	if err != nil {
+		t.Errorf("Wasn't possible to get the crypto stream. Error: %v", err)
+	}
+
+	if serverResponse == nil {
+		t.Errorf("Server stream wasn't received. Value: %v", serverResponse)
+	}
+
+	if serverResponse.Votes != 1 {
+		t.Errorf("Value returned from server wasn't correct. Expected: %v, received: %v", 1, serverResponse.Votes)
 	}
 }
