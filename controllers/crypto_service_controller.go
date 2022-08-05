@@ -124,5 +124,50 @@ func (s *CryptoServiceServer) StreamCryptoVotes(request *pb.StreamCryptoVotesReq
 		}
 
 		stream.Send(streamResponse)
+
 	}
 }
+
+/*func (server *Server) CreateVoteStream(symbol *CryptocurrencySymbol, stream CryptocurrencyService_CreateVoteStreamServer) error {
+	// validate if currency exists
+	_, err := GetBySymbol(symbol.Symbol)
+	if err != nil {
+		return err
+	}
+
+	conn := &Connection{
+		stream: stream,
+		symbol: symbol.Symbol,
+		err:    make(chan error),
+	}
+	server.connections = append(server.connections, conn)
+	log.Printf("New vote listener for %s registered!", symbol.Symbol)
+	return <-conn.err
+}*/
+
+/*
+stream, err := c.CreateVoteStream(context.Background(), &newCurrency)
+if err != nil {
+	log.Fatalf("Could not connect: %s", err)
+}
+
+done := make(chan bool)
+
+go func() {
+	for {
+		response, err := stream.Recv()
+		if err == io.EOF {
+			done <- true //means stream is finished
+			return
+		}
+		if err != nil {
+			log.Fatalf("cannot receive %v", err)
+		}
+		log.Printf("Vote update for %s received: %d", newCurrency.Symbol, response.Votes)
+	}
+}()
+
+<-done
+log.Printf("Finished")
+//log.Prin
+*/
