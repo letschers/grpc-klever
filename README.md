@@ -17,7 +17,7 @@
 - The API have a method that stream a live update of the current sum of the votes from a given Cryptocurrency
 
 
-## How to run ## 
+## How to run #
 
 
 1. Clone repository
